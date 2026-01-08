@@ -4,9 +4,11 @@ struct SettingsView: View {
     @ObservedObject var googleAuth = GoogleAuthManager.shared
     @ObservedObject var calendarManager = CalendarManager.shared
     @ObservedObject var automationManager = AutomationManager.shared
+    @ObservedObject var slackManager = SlackManager.shared
     @Environment(\.dismiss) private var dismiss
 
     @State private var hasAppeared = false
+    @State private var showSlackLogin = false
 
     var body: some View {
         ZStack {
@@ -71,6 +73,31 @@ struct SettingsView: View {
                         }
                         .opacity(hasAppeared ? 1 : 0)
                         .offset(y: hasAppeared ? 0 : 10)
+
+                        // Slack Section
+                        ZenSettingsSection(title: "Slack") {
+                            if slackManager.isAuthenticated {
+                                ZenConnectionCard(
+                                    icon: "bubble.left.and.bubble.right",
+                                    title: "Slack",
+                                    subtitle: slackManager.teamName ?? "Connected",
+                                    isConnected: true,
+                                    action: { slackManager.signOut() },
+                                    actionLabel: "Disconnect"
+                                )
+                            } else {
+                                ZenConnectionCard(
+                                    icon: "bubble.left.and.bubble.right",
+                                    title: "Slack",
+                                    subtitle: "Sync status & DND",
+                                    isConnected: false,
+                                    action: { showSlackLogin = true },
+                                    actionLabel: "Connect"
+                                )
+                            }
+                        }
+                        .opacity(hasAppeared ? 1 : 0)
+                        .offset(y: hasAppeared ? 0 : 12)
 
                         // Automation Section
                         ZenSettingsSection(title: "Automation") {
@@ -169,6 +196,9 @@ struct SettingsView: View {
             if authenticated {
                 calendarManager.fetchCalendarList()
             }
+        }
+        .sheet(isPresented: $showSlackLogin) {
+            SlackTokenInputSheet(onDismiss: { showSlackLogin = false })
         }
     }
 

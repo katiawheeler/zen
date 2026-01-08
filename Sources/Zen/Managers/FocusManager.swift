@@ -166,6 +166,17 @@ class AutomationManager: ObservableObject {
                 // Run heavy process on background thread to avoid blocking UI
                 DispatchQueue.global(qos: .userInitiated).async {
                     FocusManager.shared.setZenMode(enabled: true)
+
+                    // Slack Integration
+                    if SlackManager.shared.isAuthenticated {
+                        // Calculate meeting duration remaining
+                        let duration = Int(meeting.end.dateTime != nil ? ISO8601DateFormatter().date(from: meeting.end.dateTime!)!.timeIntervalSince(Date()) / 60 : 60)
+                        let safeDuration = max(1, duration)
+
+                        print("💬 [Slack] Setting status 'In a meeting' for \(safeDuration) mins")
+                        SlackManager.shared.updateStatus(text: "In a meeting", emoji: ":no_entry_sign:", durationInMinutes: safeDuration)
+                        SlackManager.shared.setSnooze(minutes: safeDuration)
+                    }
                 }
             }
         } else {
@@ -176,6 +187,13 @@ class AutomationManager: ObservableObject {
                 // Run heavy process on background thread to avoid blocking UI
                 DispatchQueue.global(qos: .userInitiated).async {
                     FocusManager.shared.setZenMode(enabled: false)
+
+                    // Slack Integration
+                    if SlackManager.shared.isAuthenticated {
+                        print("💬 [Slack] Clearing status")
+                        SlackManager.shared.updateStatus(text: "", emoji: "")
+                        SlackManager.shared.setSnooze(minutes: 0)
+                    }
                 }
             }
         }
