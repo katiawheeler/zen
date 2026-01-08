@@ -7,7 +7,7 @@ struct ZenApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        MenuBarExtra("Zen", systemImage: "leaf.fill") {
+        MenuBarExtra("Zen", image: "MenuBarIcon") {
             MainView()
         }
         .menuBarExtraStyle(.window)
