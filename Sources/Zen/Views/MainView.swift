@@ -5,7 +5,25 @@ struct MainView: View {
     @State private var hasAppeared = false
     @ObservedObject var googleAuth = GoogleAuthManager.shared
     @ObservedObject var calendarManager = CalendarManager.shared
+    @ObservedObject var outlookAuth = OutlookAuthManager.shared
+    @ObservedObject var outlookCalendarManager = OutlookCalendarManager.shared
     @ObservedObject var focusManager = FocusManager.shared
+
+    /// Aggregated events from all calendar sources, sorted by start time
+    var allRelevantEvents: [CalendarEvent] {
+        let googleEvents = calendarManager.relevantEvents
+        let outlookEvents = outlookCalendarManager.upcomingEvents
+        let combined = googleEvents + outlookEvents
+        return combined.sorted { event1, event2 in
+            let date1 = ISO8601DateFormatter().date(from: event1.start.dateTime ?? event1.start.date ?? "") ?? Date.distantFuture
+            let date2 = ISO8601DateFormatter().date(from: event2.start.dateTime ?? event2.start.date ?? "") ?? Date.distantFuture
+            return date1 < date2
+        }
+    }
+
+    var isAnyCalendarConnected: Bool {
+        googleAuth.isAuthenticated || outlookAuth.isAuthenticated
+    }
 
     var body: some View {
         NavigationStack {
@@ -18,7 +36,7 @@ struct MainView: View {
                     // Header
                     ZenHeader(
                         showSettings: $showSettings,
-                        isConnected: googleAuth.isAuthenticated
+                        isConnected: isAnyCalendarConnected
                     )
                     .opacity(hasAppeared ? 1 : 0)
                     .offset(y: hasAppeared ? 0 : -10)
@@ -36,7 +54,7 @@ struct MainView: View {
                     // Status section
                     VStack(spacing: 16) {
                         // Calendar events
-                        if calendarManager.relevantEvents.isEmpty {
+                        if allRelevantEvents.isEmpty {
                             ZenStatusRow(
                                 icon: "calendar",
                                 label: "Next Meeting",
@@ -44,7 +62,7 @@ struct MainView: View {
                                 accentColor: .zenSand
                             )
                         } else {
-                            ForEach(Array(calendarManager.relevantEvents.enumerated()), id: \.element.id) { index, event in
+                            ForEach(Array(allRelevantEvents.enumerated()), id: \.element.id) { index, event in
                                 ZenEventRow(
                                     icon: index == 0 ? "calendar" : "calendar.badge.clock",
                                     label: index == 0 ? "Next Meeting" : "Then",
@@ -118,6 +136,11 @@ struct MainView: View {
                 calendarManager.fetchEvents()
             }
 
+            outlookAuth.restoreSession()
+            if outlookAuth.isAuthenticated {
+                outlookCalendarManager.fetchEvents()
+            }
+
             // Staggered entrance animation
             withAnimation(.spring(response: 0.7, dampingFraction: 0.8).delay(0.1)) {
                 hasAppeared = true
@@ -126,6 +149,11 @@ struct MainView: View {
         .onChange(of: googleAuth.isAuthenticated) { authenticated in
             if authenticated {
                 calendarManager.fetchEvents()
+            }
+        }
+        .onChange(of: outlookAuth.isAuthenticated) { authenticated in
+            if authenticated {
+                outlookCalendarManager.fetchEvents()
             }
         }
     }

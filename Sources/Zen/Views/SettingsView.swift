@@ -3,6 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var googleAuth = GoogleAuthManager.shared
     @ObservedObject var calendarManager = CalendarManager.shared
+    @ObservedObject var outlookAuth = OutlookAuthManager.shared
+    @ObservedObject var outlookCalendarManager = OutlookCalendarManager.shared
     @ObservedObject var automationManager = AutomationManager.shared
     @Environment(\.dismiss) private var dismiss
 
@@ -71,6 +73,54 @@ struct SettingsView: View {
                         }
                         .opacity(hasAppeared ? 1 : 0)
                         .offset(y: hasAppeared ? 0 : 10)
+
+                        // Outlook Calendar Section
+                        ZenSettingsSection(title: "Outlook Calendar") {
+                            if outlookAuth.isAuthenticated {
+                                VStack(spacing: 12) {
+                                    ZenConnectionCard(
+                                        icon: "calendar",
+                                        title: "Outlook Calendar",
+                                        subtitle: outlookAuth.userEmail ?? "Connected",
+                                        isConnected: true,
+                                        action: { outlookAuth.signOut() },
+                                        actionLabel: "Disconnect"
+                                    )
+
+                                    // Calendar Selection
+                                    if !outlookCalendarManager.availableCalendars.isEmpty {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            Text("INCLUDED CALENDARS")
+                                                .font(.zenMono(9))
+                                                .foregroundColor(Color.zenSand.opacity(0.5))
+                                                .tracking(1.5)
+
+                                            ForEach(outlookCalendarManager.availableCalendars) { calendar in
+                                                ZenToggleRow(
+                                                    title: calendar.name,
+                                                    isOn: Binding(
+                                                        get: { calendar.isSelected },
+                                                        set: { _ in outlookCalendarManager.toggleCalendar(calendar) }
+                                                    )
+                                                )
+                                            }
+                                        }
+                                        .padding(.top, 8)
+                                    }
+                                }
+                            } else {
+                                ZenConnectionCard(
+                                    icon: "calendar",
+                                    title: "Outlook Calendar",
+                                    subtitle: "Sync your Microsoft events",
+                                    isConnected: false,
+                                    action: { outlookAuth.startOAuthFlow() },
+                                    actionLabel: "Connect"
+                                )
+                            }
+                        }
+                        .opacity(hasAppeared ? 1 : 0)
+                        .offset(y: hasAppeared ? 0 : 12)
 
                         // Automation Section
                         ZenSettingsSection(title: "Automation") {
@@ -161,6 +211,11 @@ struct SettingsView: View {
                 calendarManager.fetchCalendarList()
             }
 
+            outlookAuth.restoreSession()
+            if outlookAuth.isAuthenticated {
+                outlookCalendarManager.fetchCalendarList()
+            }
+
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) {
                 hasAppeared = true
             }
@@ -168,6 +223,11 @@ struct SettingsView: View {
         .onChange(of: googleAuth.isAuthenticated) { authenticated in
             if authenticated {
                 calendarManager.fetchCalendarList()
+            }
+        }
+        .onChange(of: outlookAuth.isAuthenticated) { authenticated in
+            if authenticated {
+                outlookCalendarManager.fetchCalendarList()
             }
         }
     }
