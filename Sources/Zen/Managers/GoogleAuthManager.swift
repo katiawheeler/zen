@@ -86,10 +86,10 @@ class GoogleAuthManager: NSObject, ObservableObject {
                         self?.isAuthenticated = true
                         self?.fetchUserInfo()
 
-                        // Store tokens securely (in production, use Keychain)
-                        UserDefaults.standard.set(accessToken, forKey: "google_access_token")
+                        // Store tokens securely in Keychain
+                        KeychainManager.save(key: "google_access_token", value: accessToken)
                         if let refreshToken = refreshToken {
-                            UserDefaults.standard.set(refreshToken, forKey: "google_refresh_token")
+                            KeychainManager.save(key: "google_refresh_token", value: refreshToken)
                         }
                     }
                 }
@@ -130,7 +130,7 @@ class GoogleAuthManager: NSObject, ObservableObject {
                    let accessToken = json["access_token"] as? String {
                     DispatchQueue.main.async {
                         self?.accessToken = accessToken
-                        UserDefaults.standard.set(accessToken, forKey: "google_access_token")
+                        KeychainManager.save(key: "google_access_token", value: accessToken)
                         completion(true)
                     }
                 } else {
@@ -166,13 +166,28 @@ class GoogleAuthManager: NSObject, ObservableObject {
         refreshToken = nil
         userEmail = nil
         isAuthenticated = false
-        UserDefaults.standard.removeObject(forKey: "google_access_token")
-        UserDefaults.standard.removeObject(forKey: "google_refresh_token")
+        KeychainManager.delete(key: "google_access_token")
+        KeychainManager.delete(key: "google_refresh_token")
     }
 
     func restoreSession() {
-        let savedAccessToken = UserDefaults.standard.string(forKey: "google_access_token")
-        let savedRefreshToken = UserDefaults.standard.string(forKey: "google_refresh_token")
+        // Try Keychain first
+        var savedAccessToken = KeychainManager.get(key: "google_access_token")
+        var savedRefreshToken = KeychainManager.get(key: "google_refresh_token")
+
+        // Migrate from UserDefaults if needed (for existing users)
+        if savedAccessToken == nil && savedRefreshToken == nil {
+            if let legacyAccess = UserDefaults.standard.string(forKey: "google_access_token") {
+                savedAccessToken = legacyAccess
+                KeychainManager.save(key: "google_access_token", value: legacyAccess)
+                UserDefaults.standard.removeObject(forKey: "google_access_token")
+            }
+            if let legacyRefresh = UserDefaults.standard.string(forKey: "google_refresh_token") {
+                savedRefreshToken = legacyRefresh
+                KeychainManager.save(key: "google_refresh_token", value: legacyRefresh)
+                UserDefaults.standard.removeObject(forKey: "google_refresh_token")
+            }
+        }
 
         if savedAccessToken != nil || savedRefreshToken != nil {
             accessToken = savedAccessToken

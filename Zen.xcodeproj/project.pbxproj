@@ -19,6 +19,7 @@
 		A100000B /* ZenDesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000B; };
 		A1000010 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000010; };
 		A1000011 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000011; };
+		A1000012 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000012; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		A4000002 /* Zen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Zen.entitlements; sourceTree = "<group>"; };
 		A2000010 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		A2000011 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2000012 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 				A2000004 /* GoogleAuthManager.swift */,
 				A2000005 /* CalendarManager.swift */,
 				A2000007 /* FocusManager.swift */,
+				A2000012 /* KeychainManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -194,6 +197,7 @@
 				A100000A /* ZenShortcuts.swift in Sources */,
 				A100000B /* ZenDesignSystem.swift in Sources */,
 				A1000010 /* Config.swift in Sources */,
+				A1000012 /* KeychainManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

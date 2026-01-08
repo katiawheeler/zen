@@ -534,6 +534,87 @@
         border-color: rgba(216, 158, 89, 0.3);
       }
 
+      /* Privacy Section */
+      .privacy {
+        padding: 4rem 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .privacy-card {
+        background: linear-gradient(
+          135deg,
+          rgba(115, 149, 111, 0.08) 0%,
+          rgba(31, 31, 36, 0.5) 100%
+        );
+        border: 1px solid rgba(115, 149, 111, 0.2);
+        border-radius: 16px;
+        padding: 3rem;
+        text-align: center;
+      }
+
+      .privacy-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(115, 149, 111, 0.15);
+        border: 1px solid rgba(115, 149, 111, 0.3);
+        border-radius: 50%;
+      }
+
+      .privacy-icon svg {
+        width: 32px;
+        height: 32px;
+        stroke: var(--zen-moss);
+      }
+
+      .privacy-title {
+        font-family: var(--font-display);
+        font-size: 1.75rem;
+        font-weight: 400;
+        color: var(--zen-paper);
+        margin-bottom: 1rem;
+      }
+
+      .privacy-description {
+        font-size: 1rem;
+        color: var(--zen-sand);
+        line-height: 1.8;
+        max-width: 600px;
+        margin: 0 auto 1.5rem;
+      }
+
+      .privacy-badges {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .privacy-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--zen-moss);
+        background: rgba(115, 149, 111, 0.1);
+        border: 1px solid rgba(115, 149, 111, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+      }
+
+      .privacy-badge svg {
+        width: 14px;
+        height: 14px;
+        stroke: var(--zen-moss);
+      }
+
       /* How It Works Section */
       .how-it-works {
         padding: 6rem 2rem;
@@ -916,6 +997,7 @@
       </div>
       <div class="nav-links">
         <a href="#features">Features</a>
+        <a href="#privacy">Privacy</a>
         <a href="#how-it-works">How It Works</a>
         <a href="https://github.com/katiawheeler/Zen" target="_blank">GitHub</a>
       </div>
@@ -1094,6 +1176,49 @@
           Automatically update your Slack status when Zen Mode activates. Let
           your team know you're in focus mode without lifting a finger.
         </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="stone-divider">
+      <div class="stone-line"></div>
+      <div class="stone-dot"></div>
+      <div class="stone-line"></div>
+    </div>
+
+    <section class="privacy" id="privacy">
+      <div class="privacy-card">
+        <div class="privacy-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h2 class="privacy-title">Privacy First</h2>
+        <p class="privacy-description">
+          Your credentials never leave your machine. Zen stores OAuth tokens securely in
+          the macOS Keychain—the same encrypted vault that protects your system passwords.
+          No cloud storage, no analytics, no data collection. Your calendar stays yours.
+        </p>
+        <div class="privacy-badges">
+          <span class="privacy-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            Local Only
+          </span>
+          <span class="privacy-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            Keychain Encrypted
+          </span>
+          <span class="privacy-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            No Cloud Storage
+          </span>
         </div>
       </div>
     </section>
