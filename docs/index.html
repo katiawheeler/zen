@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zen — Mindful Focus for macOS</title>
+    <meta
+      name="description"
+      content="A menu bar app that harmonizes your calendar, focus modes, and presence.
+     Automatic tranquility during meetings."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Zen+Kaku+Gothic
+     +New:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --zen-ink: #141414;
+        --zen-charcoal: #1f1f24;
+        --zen-stone: #383839;
+        --zen-paper: #f5f0e6;
+        --zen-sand: #c7bdb0;
+        --zen-cream: #e0d9cc;
+        --zen-moss: #73956f;
+        --zen-moss-glow: rgba(115, 149, 111, 0.4);
+        --zen-amber: #d89e59;
+        --zen-coral: #d17370;
+
+        --font-display: "Cormorant Garamond", serif;
+        --font-body: "Zen Kaku Gothic New", sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--zen-ink);
+        color: var(--zen-paper);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* Noise texture overlay */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200'xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        z-index: 1000;
+      }
+
+      /* Ink wash gradient background */
+      .ink-wash {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            ellipse 80% 50% at 20% 20%,
+            rgba(56, 56, 57, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse 60% 40% at 80% 80%,
+            rgba(115, 149, 111, 0.05) 0%,
+            transparent 50%
+          ),
+          linear-gradient(180deg, var(--zen-ink) 0%, #0a0a0a 100%);
+        z-index: -1;
+      }
+
+      /* Navigation */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 1.5rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+        background: linear-gradient(
+          180deg,
+          var(--zen-ink) 0%,
+          transparent 100%
+        );
+      }
+
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .nav-logo .kanji {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: var(--zen-paper);
+      }
+
+      .nav-logo .wordmark {
+        font-family: var(--font-body);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.25em;
+        color: var(--zen-sand);
+        text-transform: uppercase;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        align-items: center;
+      }
+
+      .nav-links a {
+        font-size: 0.8rem;
+        font-weight: 400;
+        letter-spacing: 0.1em;
+        color: var(--zen-sand);
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--zen-paper);
+      }
+
+      /* Hero Section */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 6rem 2rem;
+        position: relative;
+      }
+
+      /* Breathing Circle */
+      .breathing-container {
+        position: relative;
+        width: 280px;
+        height: 280px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 4rem;
+      }
+
+      .breathing-circle {
+        position: absolute;
+        border-radius: 50%;
+      }
+
+      .breathing-outer {
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(
+          circle,
+          transparent 40%,
+          rgba(115, 149, 111, 0.1) 70%,
+          transparent 100%
+        );
+        animation: breathe-outer 4s ease-in-out infinite;
+      }
+
+      .breathing-middle {
+        width: 200px;
+        height: 200px;
+        border: 1px solid rgba(115, 149, 111, 0.3);
+        animation: breathe-middle 4s ease-in-out infinite;
+      }
+
+      .breathing-core {
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(
+          circle,
+          var(--zen-moss) 0%,
+          rgba(115, 149, 111, 0.6) 40%,
+          transparent 70%
+        );
+        box-shadow: 0 0 60px var(--zen-moss-glow),
+          0 0 120px rgba(115, 149, 111, 0.2);
+        animation: breathe-core 4s ease-in-out infinite;
+      }
+
+      .breathing-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--zen-paper);
+        border-radius: 50%;
+        animation: breathe-dot 4s ease-in-out infinite;
+      }
+
+      @keyframes breathe-outer {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.5;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 0.8;
+        }
+      }
+
+      @keyframes breathe-middle {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.4;
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 0.7;
+        }
+      }
+
+      @keyframes breathe-core {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+      }
+
+      @keyframes breathe-dot {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.3);
+        }
+      }
+
+      .hero-content {
+        text-align: center;
+        max-width: 600px;
+      }
+
+      .hero-kanji {
+        font-family: var(--font-display);
+        font-size: 4rem;
+        font-weight: 300;
+        color: var(--zen-paper);
+        margin-bottom: 0.5rem;
+        opacity: 0;
+        animation: fade-up 1s ease-out 0.2s forwards;
+      }
+
+      .hero-title {
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: var(--zen-sand);
+        margin-bottom: 2rem;
+        opacity: 0;
+        animation: fade-up 1s ease-out 0.4s forwards;
+      }
+
+      .hero-tagline {
+        font-family: var(--font-display);
+        font-size: 1.75rem;
+        font-weight: 300;
+        color: var(--zen-cream);
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        opacity: 0;
+        animation: fade-up 1s ease-out 0.6s forwards;
+      }
+
+      .hero-description {
+        font-size: 1rem;
+        color: var(--zen-sand);
+        margin-bottom: 3rem;
+        opacity: 0;
+        animation: fade-up 1s ease-out 0.8s forwards;
+      }
+
+      @keyframes fade-up {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* CTA Button */
+      .cta-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        opacity: 0;
+        animation: fade-up 1s ease-out 1s forwards;
+      }
+
+      .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2.5rem;
+        background: var(--zen-moss);
+        color: var(--zen-paper);
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 24px rgba(115, 149, 111, 0.3);
+      }
+
+      .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(115, 149, 111, 0.4);
+      }
+
+      .cta-button svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .cta-meta {
+        font-size: 0.75rem;
+        color: var(--zen-stone);
+        letter-spacing: 0.1em;
+      }
+
+      /* Stone Divider */
+      .stone-divider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 4rem 0;
+      }
+
+      .stone-line {
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--zen-stone),
+          transparent
+        );
+      }
+
+      .stone-dot {
+        width: 4px;
+        height: 4px;
+        background: var(--zen-stone);
+        border-radius: 50%;
+      }
+
+      /* Features Section */
+      .features {
+        padding: 4rem 2rem 8rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 5rem;
+      }
+
+      .section-label {
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--zen-moss);
+        margin-bottom: 1rem;
+      }
+
+      .section-title {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        font-weight: 300;
+        color: var(--zen-paper);
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+      }
+
+      .feature-card {
+        background: linear-gradient(
+          135deg,
+          var(--zen-charcoal) 0%,
+          rgba(31, 31, 36, 0.5) 100%
+        );
+        border: 1px solid var(--zen-stone);
+        border-radius: 12px;
+        padding: 2.5rem;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--zen-moss),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(115, 149, 111, 0.3);
+      }
+
+      .feature-card:hover::before {
+        opacity: 1;
+      }
+
+      .feature-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(115, 149, 111, 0.1);
+        border: 1px solid rgba(115, 149, 111, 0.2);
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+      }
+
+      .feature-icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: var(--zen-moss);
+      }
+
+      .feature-title {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: var(--zen-paper);
+        margin-bottom: 0.75rem;
+      }
+
+      .feature-description {
+        font-size: 0.95rem;
+        color: var(--zen-sand);
+        line-height: 1.7;
+      }
+      /* Coming Soon Cards */
+      .feature-card.coming-soon {
+        position: relative;
+        opacity: 0.7;
+      }
+      .feature-card.coming-soon:hover {
+        opacity: 0.85;
+      }
+      .coming-soon-badge {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        font-size: 0.6rem;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--zen-amber);
+        background: rgba(216, 158, 89, 0.15);
+        border: 1px solid rgba(216, 158, 89, 0.3);
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+      }
+      .feature-card.coming-soon .feature-icon {
+        background: rgba(216, 158, 89, 0.1);
+        border-color: rgba(216, 158, 89, 0.2);
+      }
+      .feature-card.coming-soon .feature-icon svg {
+        stroke: var(--zen-amber);
+      }
+      .feature-card.coming-soon::before {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--zen-amber),
+          transparent
+        );
+      }
+      .feature-card.coming-soon:hover {
+        border-color: rgba(216, 158, 89, 0.3);
+      }
+
+      /* How It Works Section */
+      .how-it-works {
+        padding: 6rem 2rem;
+        background: linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(31, 31, 36, 0.3) 50%,
+          transparent 100%
+        );
+      }
+
+      .how-it-works .section-header {
+        margin-bottom: 4rem;
+      }
+
+      .steps {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .step {
+        display: flex;
+        gap: 2rem;
+        padding: 2rem 0;
+        position: relative;
+      }
+
+      .step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        left: 23px;
+        top: 70px;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(
+          180deg,
+          var(--zen-stone) 0%,
+          transparent 100%
+        );
+      }
+
+      .step-number {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--zen-charcoal);
+        border: 1px solid var(--zen-stone);
+        border-radius: 50%;
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        color: var(--zen-moss);
+      }
+
+      .step-content h3 {
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        font-weight: 400;
+        color: var(--zen-paper);
+        margin-bottom: 0.5rem;
+      }
+
+      .step-content p {
+        font-size: 0.95rem;
+        color: var(--zen-sand);
+        line-height: 1.7;
+      }
+
+      /* Preview Section */
+      .preview {
+        padding: 6rem 2rem;
+        text-align: center;
+      }
+
+      .preview .section-header {
+        margin-bottom: 3rem;
+      }
+
+      .preview-window {
+        max-width: 400px;
+        margin: 0 auto;
+        background: var(--zen-charcoal);
+        border: 1px solid var(--zen-stone);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+      }
+
+      .preview-titlebar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: rgba(0, 0, 0, 0.3);
+        border-bottom: 1px solid var(--zen-stone);
+      }
+
+      .preview-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--zen-stone);
+      }
+
+      .preview-dot.red {
+        background: var(--zen-coral);
+      }
+      .preview-dot.yellow {
+        background: var(--zen-amber);
+      }
+      .preview-dot.green {
+        background: var(--zen-moss);
+      }
+
+      .preview-content {
+        padding: 2rem;
+      }
+
+      .preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .preview-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .preview-brand .kanji {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        color: var(--zen-paper);
+      }
+
+      .preview-brand span {
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        color: var(--zen-sand);
+      }
+
+      .preview-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.7rem;
+        color: var(--zen-moss);
+      }
+
+      .preview-status-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--zen-moss);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--zen-moss-glow);
+      }
+
+      .preview-orb {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 2rem;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          var(--zen-moss) 0%,
+          rgba(115, 149, 111, 0.4) 50%,
+          transparent 70%
+        );
+        box-shadow: 0 0 40px var(--zen-moss-glow);
+        animation: breathe-core 4s ease-in-out infinite;
+      }
+
+      .preview-meeting {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--zen-stone);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .preview-meeting-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--zen-sand);
+        margin-bottom: 0.5rem;
+      }
+
+      .preview-meeting-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .preview-meeting-time {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--zen-amber);
+        background: rgba(216, 158, 89, 0.15);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+      }
+
+      .preview-meeting-title {
+        font-size: 0.85rem;
+        color: var(--zen-paper);
+      }
+
+      .preview-btn {
+        width: 100%;
+        padding: 0.875rem;
+        background: var(--zen-moss);
+        border: none;
+        border-radius: 8px;
+        font-family: var(--font-body);
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--zen-paper);
+        cursor: pointer;
+      }
+
+      /* Final CTA */
+      .final-cta {
+        padding: 8rem 2rem;
+        text-align: center;
+      }
+
+      .final-cta .hero-kanji {
+        font-size: 3rem;
+        animation: none;
+        opacity: 1;
+      }
+
+      .final-cta .hero-tagline {
+        animation: none;
+        opacity: 1;
+        margin-bottom: 2.5rem;
+      }
+
+      .final-cta .cta-container {
+        animation: none;
+        opacity: 1;
+      }
+
+      /* Footer */
+      footer {
+        padding: 3rem 2rem;
+        border-top: 1px solid var(--zen-stone);
+      }
+
+      .footer-content {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .footer-brand .kanji {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        color: var(--zen-paper);
+      }
+
+      .footer-brand span {
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        color: var(--zen-sand);
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 2rem;
+      }
+
+      .footer-links a {
+        font-size: 0.8rem;
+        color: var(--zen-sand);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: var(--zen-paper);
+      }
+
+      .footer-copy {
+        font-size: 0.75rem;
+        color: var(--zen-stone);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        nav {
+          padding: 1rem 1.5rem;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .hero {
+          padding: 8rem 1.5rem 4rem;
+        }
+
+        .breathing-container {
+          width: 200px;
+          height: 200px;
+          margin-bottom: 3rem;
+        }
+
+        .breathing-outer {
+          width: 200px;
+          height: 200px;
+        }
+        .breathing-middle {
+          width: 140px;
+          height: 140px;
+        }
+        .breathing-core {
+          width: 80px;
+          height: 80px;
+        }
+
+        .hero-kanji {
+          font-size: 3rem;
+        }
+
+        .hero-tagline {
+          font-size: 1.4rem;
+        }
+
+        .section-title {
+          font-size: 2rem;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .step {
+          gap: 1.5rem;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          gap: 1.5rem;
+          text-align: center;
+        }
+
+        .footer-links {
+          gap: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ink-wash"></div>
+
+    <nav>
+      <div class="nav-logo">
+        <span class="kanji">禅</span>
+        <span class="wordmark">Zen</span>
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="https://github.com/katiawheeler/Zen" target="_blank">GitHub</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="breathing-container">
+        <div class="breathing-circle breathing-outer"></div>
+        <div class="breathing-circle breathing-middle"></div>
+        <div class="breathing-circle breathing-core"></div>
+        <div class="breathing-circle breathing-dot"></div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-kanji">禅</div>
+        <h1 class="hero-title">Zen</h1>
+        <p class="hero-tagline">
+          Mindful focus, automated.<br />Tranquility in your menu bar.
+        </p>
+        <p class="hero-description">
+          Zen harmonizes your calendar, focus modes, and presence—automatically
+          enabling deep work when you're in meetings and releasing when you're
+          free.
+        </p>
+        <div class="cta-container">
+          <a
+            href="https://github.com/katiawheeler/Zen/releases"
+            class="cta-button"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download for macOS
+          </a>
+          <span class="cta-meta">Requires macOS 13.0 or later</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="stone-divider">
+      <div class="stone-line"></div>
+      <div class="stone-dot"></div>
+      <div class="stone-line"></div>
+    </div>
+
+    <section class="features" id="features">
+      <div class="section-header">
+        <p class="section-label">Capabilities</p>
+        <h2 class="section-title">Designed for deep work</h2>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 6v6l4 2" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Automatic Focus Mode</h3>
+          <p class="feature-description">
+            Zen watches your calendar and automatically enables Focus Mode when
+            meetings begin. When you're free, it releases—no manual toggling
+            required.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Google Calendar Sync</h3>
+          <p class="feature-description">
+            Connect your Google Calendar with secure OAuth. Zen monitors your
+            events in real-time and displays upcoming meetings right in your
+            menu bar.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Menu Bar Native</h3>
+          <p class="feature-description">
+            Lives quietly in your menu bar, hidden from the dock. The breathing
+            circle provides a gentle visual indicator of your current focus
+            state.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" y1="19" x2="12" y2="22" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Siri & Shortcuts</h3>
+          <p class="feature-description">
+            Full integration with Apple Shortcuts and Siri. Control your focus
+            with voice commands or build custom automations that fit your
+            workflow.
+          </p>
+        </div>
+
+        <div class="feature-card coming-soon">
+        <span class="coming-soon-badge">Coming Soon</span>
+        <div class="feature-icon outlook">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+            <path
+              d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6z"
+            />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
+        </div>
+        <h3 class="feature-title">Outlook Calendar</h3>
+        <p class="feature-description">
+          Connect your Microsoft Outlook calendar for seamless meeting
+          detection. Perfect for enterprise environments and Office 365 users.
+        </p>
+      </div>
+      <div class="feature-card coming-soon">
+        <span class="coming-soon-badge">Coming Soon</span>
+        <div class="feature-icon slack">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+            <path
+              d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0
+                   +.83-.67 1.5-1.5 1.5z"
+            />
+            <path
+              d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"
+            />
+            <path
+              d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8
+                   +20.5v-5c0-.83.67-1.5 1.5-1.5z"
+            />
+            <path
+              d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"
+            />
+            <path
+              d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83
+                   +0-1.5-.67-1.5-1.5z"
+            />
+            <path
+              d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"
+            />
+            <path
+              d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0
+                   +1.5-.67 1.5-1.5z"
+            />
+            <path
+              d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"
+            />
+          </svg>
+        </div>
+        <h3 class="feature-title">Slack Status Sync</h3>
+        <p class="feature-description">
+          Automatically update your Slack status when Zen Mode activates. Let
+          your team know you're in focus mode without lifting a finger.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="how-it-works" id="how-it-works">
+      <div class="section-header">
+        <p class="section-label">Getting Started</p>
+        <h2 class="section-title">Three steps to tranquility</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Connect Your Calendar</h3>
+            <p>
+              Sign in with Google to sync your calendar. Zen securely accesses
+              your events to know when you're in meetings.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Create Focus Shortcuts</h3>
+            <p>
+              Set up two simple Shortcuts: "Zen Mode On" and "Zen Mode Off".
+              These control your macOS Focus settings.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Enable Automation</h3>
+            <p>
+              Toggle on automatic mode in settings. Zen will handle the
+              rest—activating focus during meetings and releasing when you're
+              free.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview">
+      <div class="section-header">
+        <p class="section-label">Interface</p>
+        <h2 class="section-title">Minimal by design</h2>
+      </div>
+
+      <div class="preview-window">
+        <div class="preview-titlebar">
+          <div class="preview-dot red"></div>
+          <div class="preview-dot yellow"></div>
+          <div class="preview-dot green"></div>
+        </div>
+        <div class="preview-content">
+          <div class="preview-header">
+            <div class="preview-brand">
+              <span class="kanji">禅</span>
+              <span>ZEN</span>
+            </div>
+            <div class="preview-status">
+              <div class="preview-status-dot"></div>
+              Synced
+            </div>
+          </div>
+
+          <div class="preview-orb"></div>
+
+          <div class="preview-meeting">
+            <div class="preview-meeting-label">Next Meeting</div>
+            <div class="preview-meeting-row">
+              <span class="preview-meeting-time">2:00 PM</span>
+              <span class="preview-meeting-title">Team Standup</span>
+            </div>
+          </div>
+
+          <button class="preview-btn">Begin Zen</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="hero-kanji">禅</div>
+      <p class="hero-tagline">Find your focus.<br />Let Zen handle the rest.</p>
+      <div class="cta-container">
+        <a
+          href="https://github.com/katiawheeler/Zen/releases"
+          class="cta-button"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Download for macOS
+        </a>
+        <span class="cta-meta">Free &amp; Open Source</span>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="kanji">禅</span>
+          <span>ZEN</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/katiawheeler/Zen" target="_blank"
+            >GitHub</a
+          >
+          <a href="https://github.com/katiawheeler/Zen/releases" target="_blank"
+            >Releases</a
+          >
+          <a href="https://github.com/katiawheeler/Zen/issues" target="_blank"
+            >Issues</a
+          >
+        </div>
+        <span class="footer-copy"
+          >&copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          Zen. Open source under MIT.</span
+        >
+      </div>
+    </footer>
+  </body>
+</html>
