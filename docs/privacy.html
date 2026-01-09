@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy — Zen</title>
+    <meta
+      name="description"
+      content="Privacy policy for Zen — a menu bar app that harmonizes your calendar, focus modes, and presence."
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://zen.katiawheeler.com/privacy.html" />
+    <meta property="og:title" content="Privacy Policy — Zen 禅" />
+    <meta property="og:description" content="Privacy policy for Zen — your data stays on your device." />
+    <meta property="og:image" content="https://zen.katiawheeler.com/og-image.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://zen.katiawheeler.com/privacy.html" />
+    <meta name="twitter:title" content="Privacy Policy — Zen 禅" />
+    <meta property="twitter:description" content="Privacy policy for Zen — your data stays on your device." />
+    <meta name="twitter:image" content="https://zen.katiawheeler.com/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --zen-ink: #141414;
+        --zen-charcoal: #1f1f24;
+        --zen-stone: #383839;
+        --zen-paper: #f5f0e6;
+        --zen-sand: #c7bdb0;
+        --zen-cream: #e0d9cc;
+        --zen-moss: #73956f;
+        --zen-moss-glow: rgba(115, 149, 111, 0.4);
+        --zen-amber: #d89e59;
+        --zen-coral: #d17370;
+
+        --font-display: "Cormorant Garamond", serif;
+        --font-body: "Zen Kaku Gothic New", sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--zen-ink);
+        color: var(--zen-paper);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* Noise texture overlay */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200'xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        z-index: 1000;
+      }
+
+      /* Ink wash gradient background */
+      .ink-wash {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            ellipse 80% 50% at 20% 20%,
+            rgba(56, 56, 57, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse 60% 40% at 80% 80%,
+            rgba(115, 149, 111, 0.05) 0%,
+            transparent 50%
+          ),
+          linear-gradient(180deg, var(--zen-ink) 0%, #0a0a0a 100%);
+        z-index: -1;
+      }
+
+      /* Navigation */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 1.5rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+        background: linear-gradient(
+          180deg,
+          var(--zen-ink) 0%,
+          transparent 100%
+        );
+      }
+
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+      }
+
+      .nav-logo .kanji {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: var(--zen-paper);
+      }
+
+      .nav-logo .wordmark {
+        font-family: var(--font-body);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.25em;
+        color: var(--zen-sand);
+        text-transform: uppercase;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        align-items: center;
+      }
+
+      .nav-links a {
+        font-size: 0.8rem;
+        font-weight: 400;
+        letter-spacing: 0.1em;
+        color: var(--zen-sand);
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--zen-paper);
+      }
+
+      /* Main Content */
+      main {
+        min-height: 100vh;
+        padding: 8rem 2rem 4rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .page-kanji {
+        font-family: var(--font-display);
+        font-size: 3rem;
+        font-weight: 300;
+        color: var(--zen-paper);
+        margin-bottom: 0.5rem;
+      }
+
+      .page-title {
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: var(--zen-sand);
+        margin-bottom: 1rem;
+      }
+
+      .page-subtitle {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        font-weight: 300;
+        color: var(--zen-cream);
+        line-height: 1.5;
+      }
+
+      .privacy-content {
+        background: linear-gradient(
+          135deg,
+          var(--zen-charcoal) 0%,
+          rgba(31, 31, 36, 0.5) 100%
+        );
+        border: 1px solid var(--zen-stone);
+        border-radius: 12px;
+        padding: 3rem;
+      }
+
+      .privacy-content h2 {
+        font-family: var(--font-display);
+        font-size: 1.75rem;
+        font-weight: 400;
+        color: var(--zen-paper);
+        margin-bottom: 1rem;
+        margin-top: 2.5rem;
+      }
+
+      .privacy-content h2:first-child {
+        margin-top: 0;
+      }
+
+      .privacy-content h3 {
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        font-weight: 400;
+        color: var(--zen-cream);
+        margin-bottom: 0.75rem;
+        margin-top: 1.5rem;
+      }
+
+      .privacy-content p {
+        font-size: 1rem;
+        color: var(--zen-sand);
+        line-height: 1.8;
+        margin-bottom: 1.25rem;
+      }
+
+      .privacy-content ul {
+        margin-bottom: 1.25rem;
+        padding-left: 2rem;
+      }
+
+      .privacy-content li {
+        font-size: 1rem;
+        color: var(--zen-sand);
+        line-height: 1.8;
+        margin-bottom: 0.5rem;
+      }
+
+      .privacy-content strong {
+        color: var(--zen-paper);
+      }
+
+      .privacy-content a {
+        color: var(--zen-moss);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(115, 149, 111, 0.3);
+        transition: border-color 0.3s ease;
+      }
+
+      .privacy-content a:hover {
+        border-bottom-color: var(--zen-moss);
+      }
+
+      .highlight-box {
+        background: rgba(115, 149, 111, 0.08);
+        border: 1px solid rgba(115, 149, 111, 0.2);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .highlight-box p {
+        margin-bottom: 0;
+      }
+
+      .last-updated {
+        font-size: 0.85rem;
+        color: var(--zen-stone);
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--zen-stone);
+        text-align: center;
+      }
+
+      /* Footer */
+      footer {
+        padding: 3rem 2rem;
+        border-top: 1px solid var(--zen-stone);
+      }
+
+      .footer-content {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .footer-brand .kanji {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        color: var(--zen-paper);
+      }
+
+      .footer-brand span {
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        color: var(--zen-sand);
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 2rem;
+      }
+
+      .footer-links a {
+        font-size: 0.8rem;
+        color: var(--zen-sand);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: var(--zen-paper);
+      }
+
+      .footer-copy {
+        font-size: 0.75rem;
+        color: var(--zen-stone);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        nav {
+          padding: 1rem 1.5rem;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        main {
+          padding: 6rem 1.5rem 3rem;
+        }
+
+        .page-kanji {
+          font-size: 2.5rem;
+        }
+
+        .privacy-content {
+          padding: 2rem 1.5rem;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          gap: 1.5rem;
+          text-align: center;
+        }
+
+        .footer-links {
+          gap: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ink-wash"></div>
+
+    <nav>
+      <a href="index.html" class="nav-logo">
+        <span class="kanji">禅</span>
+        <span class="wordmark">Zen</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#privacy">Privacy</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="https://github.com/katiawheeler/Zen" target="_blank">GitHub</a>
+      </div>
+    </nav>
+
+    <main>
+      <div class="page-header">
+        <div class="page-kanji">禅</div>
+        <h1 class="page-title">Privacy Policy</h1>
+        <p class="page-subtitle">
+          Your data stays on your device.<br />Always.
+        </p>
+      </div>
+
+      <div class="privacy-content">
+        <div class="highlight-box">
+          <p>
+            <strong>TL;DR:</strong> Zen stores all data locally on your Mac using the system Keychain. We don't collect, transmit, or store any of your data on external servers. Your calendar events, OAuth tokens, and settings never leave your device.
+          </p>
+        </div>
+
+        <h2>Overview</h2>
+        <p>
+          Zen is designed with privacy as a core principle. This policy explains what data Zen accesses, how it's stored, and how it's used—all of which happens exclusively on your local device.
+        </p>
+
+        <h2>Data Collection and Storage</h2>
+
+        <h3>What Data Zen Accesses</h3>
+        <p>
+          To provide its functionality, Zen requires access to:
+        </p>
+        <ul>
+          <li><strong>Google Calendar Events:</strong> Zen reads your calendar events to detect when you're in meetings and automatically enable Focus Mode.</li>
+          <li><strong>OAuth Credentials:</strong> When you authenticate with Google, Zen receives OAuth tokens that allow it to access your calendar data.</li>
+          <li><strong>Focus Mode Settings:</strong> Zen stores your preferences for which Focus Mode to activate and when.</li>
+        </ul>
+
+        <h3>How Data is Stored</h3>
+        <p>
+          All data accessed by Zen is stored exclusively on your local device:
+        </p>
+        <ul>
+          <li><strong>macOS Keychain:</strong> OAuth tokens and credentials are stored in the macOS Keychain, the same secure, encrypted storage used by the operating system for passwords and certificates.</li>
+          <li><strong>Local Application Storage:</strong> User preferences and settings are stored in standard macOS application directories on your device.</li>
+          <li><strong>No Cloud Storage:</strong> Zen does not upload, sync, or transmit any of your data to external servers or cloud services.</li>
+        </ul>
+
+        <h2>Third-Party Services</h2>
+
+        <h3>Google Calendar API</h3>
+        <p>
+          Zen uses the Google Calendar API to access your calendar events. This connection is established directly between your device and Google's servers—Zen does not act as an intermediary or store your calendar data.
+        </p>
+        <p>
+          The OAuth authentication flow follows Google's security standards, and you can revoke Zen's access at any time through your Google Account settings.
+        </p>
+
+        <h3>No Analytics or Tracking</h3>
+        <p>
+          Zen does not include any analytics, telemetry, or tracking code. We don't collect information about how you use the app, which features you access, or any other behavioral data.
+        </p>
+
+        <h2>Data Sharing</h2>
+        <p>
+          Zen does not share, sell, rent, or otherwise disclose any of your data to third parties. Because all data stays on your device, there is no opportunity for data sharing.
+        </p>
+
+        <h2>Data Security</h2>
+        <p>
+          The security of your data is a top priority:
+        </p>
+        <ul>
+          <li><strong>Keychain Encryption:</strong> All sensitive credentials are stored using the macOS Keychain, which provides hardware-backed encryption on supported devices.</li>
+          <li><strong>Local-Only Processing:</strong> All calendar event processing and Focus Mode automation happens locally on your device.</li>
+          <li><strong>No Network Transmission:</strong> Beyond the necessary API calls to Google Calendar, Zen does not transmit any data over the network.</li>
+        </ul>
+
+        <h2>Open Source Transparency</h2>
+        <p>
+          Zen is open source software. You can review the complete source code at <a href="https://github.com/katiawheeler/Zen" target="_blank">github.com/katiawheeler/Zen</a> to verify our privacy claims and understand exactly how your data is handled.
+        </p>
+
+        <h2>Your Rights</h2>
+        <p>
+          Because all data is stored locally on your device, you have complete control:
+        </p>
+        <ul>
+          <li><strong>Access:</strong> You can access all data stored by Zen through your macOS Keychain and application data directories.</li>
+          <li><strong>Deletion:</strong> You can delete all Zen data by uninstalling the application and removing its associated Keychain entries.</li>
+          <li><strong>Revocation:</strong> You can revoke Zen's access to Google Calendar at any time through your Google Account settings.</li>
+        </ul>
+
+        <h2>Changes to This Policy</h2>
+        <p>
+          If we make changes to this privacy policy, we will update this page and note the revision date below. As an open source project, all changes will be visible in our Git history.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          If you have questions about this privacy policy or Zen's data handling practices, please open an issue on our <a href="https://github.com/katiawheeler/Zen/issues" target="_blank">GitHub repository</a>.
+        </p>
+
+        <div class="last-updated">
+          Last updated: January 8, 2026
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="kanji">禅</span>
+          <span>ZEN</span>
+        </div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="https://github.com/katiawheeler/Zen" target="_blank">GitHub</a>
+          <a href="https://github.com/katiawheeler/Zen/releases" target="_blank">Releases</a>
+          <a href="https://github.com/katiawheeler/Zen/issues" target="_blank">Issues</a>
+        </div>
+        <span class="footer-copy">&copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          Zen. Open source under MIT.</span>
+      </div>
+    </footer>
+  </body>
+</html>
